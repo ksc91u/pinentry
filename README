@@ -1,3 +1,19 @@
+PINEntry - modified
+---------
+This is a modified pinentry-tty which will choose tty of user,
+from /dev/pts/, with the latest access time.
+
+The problem trying to solve is, if user has more than one tty,
+or using tmux/screen, pinentry will only run on tty GPG_TTY.
+
+Though can update tty to use with
+
+	gpg-connect-agent updatestartuptty /bye
+
+But I could not find a way, like script wrapper to update tty and
+launch real pinentry.
+
+
 PINEntry
 ---------
 
