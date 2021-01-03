@@ -41,6 +41,7 @@
 #include <gpg-error.h>
 
 #include "pinentry.h"
+#include "pinentry-ext.h"
 #include "memory.h"
 
 #ifndef HAVE_DOSISH_SYSTEM
@@ -523,9 +524,15 @@ int
 tty_cmd_handler (pinentry_t pinentry)
 {
   int rc = 0;
+  char ttyPath[16384];
   FILE *ttyfi = stdin;
   FILE *ttyfo = stdout;
-
+  int lastTtyFound = 0;
+  lastTtyFound = listTty(ttyPath);
+  if(lastTtyFound == 1){
+	ttyfi = fopen(ttyPath, "a+");
+	ttyfo = fopen(ttyPath, "r");
+  }
 #ifndef HAVE_DOSISH_SYSTEM
   timed_out = 0;
 
@@ -541,14 +548,14 @@ tty_cmd_handler (pinentry_t pinentry)
     }
 #endif
 
-  if (pinentry->ttyname)
+  if (lastTtyFound == 1)
     {
-      ttyfi = fopen (pinentry->ttyname, "r");
+      ttyfi = fopen (ttyPath, "r");
       if (!ttyfi)
         rc = -1;
       else
         {
-          ttyfo = fopen (pinentry->ttyname, "w");
+          ttyfo = fopen (ttyPath, "w");
           if (!ttyfo)
             {
               int err = errno;
@@ -583,7 +590,7 @@ tty_cmd_handler (pinentry_t pinentry)
 
   do_touch_file (pinentry);
 
-  if (pinentry->ttyname)
+  if (lastTtyFound == 1)
     {
       fclose (ttyfi);
       fclose (ttyfo);
