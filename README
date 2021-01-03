@@ -14,6 +14,26 @@ But I could not find a way, like script wrapper to update tty and
 launch real pinentry.
 
 
+Install
+---------
+	# ./autogen.sh; ./configure
+	# cd tty; make
+    # copy pinentry-tty /usr/local/bin/pinentry-tty-ext
+
+	modify ~/.gnupg/gpg-agent.conf
+	add
+
+	pinentry-program /usr/local/bin/pinentry-tty-ext
+
+Alternative Solusion for SSH
+---------
+https://unix.stackexchange.com/a/499133/449243
+
+Add ~/.ssh/config:
+
+	Match host * exec "gpg-connect-agent UPDATESTARTUPTTY /bye"
+
+
 PINEntry
 ---------
 
